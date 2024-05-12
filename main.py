@@ -60,7 +60,7 @@ def home():
 
 @app.route('/export')
 def export_data():
-    return jsonify(router_data)
+    return jsonify(list(router_data))
 
 if __name__ == '__main__':
     import threading
