@@ -2,11 +2,15 @@ import subprocess
 import time
 from flask import Flask, jsonify, render_template
 from collections import deque
+import os
 
 app = Flask(__name__)
 
 router_data = deque()
 last_failed_timestamp = None
+
+HOST = os.getenv("HOST", "127.0.0.1")
+INTERFACE_NAME = os.getenv("INTERFACE_NAME", "wlp1s0")
 
 TWO_HOURS_IN_SECONDS = 2 * 60 * 60
 
@@ -19,7 +23,7 @@ def ping_host(host):
 
 def get_channel():
     try:
-        output = subprocess.check_output(['iwlist', 'wlp1s0', 'channel'])
+        output = subprocess.check_output(['iwlist', INTERFACE_NAME, 'channel'])
         channel_line = [line for line in output.decode('utf-8').split('\n') if 'Current' in line][0]
         channel = int(channel_line.split(' ')[-1].split(')')[0])
         return channel
@@ -61,5 +65,5 @@ def export_data():
 if __name__ == '__main__':
     import threading
     threading.Thread(target=collect_router_data, daemon=True).start()
-    app.run(debug=True)
+    app.run(debug=True, host=HOST)
 
