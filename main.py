@@ -1,11 +1,14 @@
 import subprocess
 import time
 from flask import Flask, jsonify, render_template
+from collections import deque
 
 app = Flask(__name__)
 
-router_data = []
+router_data = deque()
 last_failed_timestamp = None
+
+TWO_HOURS_IN_SECONDS = 2 * 60 * 60
 
 def ping_host(host):
     try:
@@ -40,6 +43,9 @@ def collect_router_data():
             'ping_2': {'success': ping_success_2, 'time_ms': ping_time_2},
             'wifi_channel': channel
         })
+
+        if(len(router_data) > TWO_HOURS_IN_SECONDS):
+            router_data.popleft()
 
         time.sleep(1)
 
