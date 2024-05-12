@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Router Diagnosis</title>
+</head>
+<body>
+    <h1>Router Diagnosis</h1>
+    {% if last_result %}
+    <h2>Last Collected Result</h2>
+    <p>Timestamp: {{ last_result.timestamp }}</p>
+    <p>Ping 1.1.1.1: {% if last_result.ping_1.success %}Success ({{ last_result.ping_1.time_ms }} ms){% else %}Failed{% endif %}</p>
+    <p>Ping 192.168.0.1: {% if last_result.ping_2.success %}Success ({{ last_result.ping_2.time_ms }} ms){% else %}Failed{% endif %}</p>
+    <p>Wi-Fi Channel: {{ last_result.wifi_channel }}</p>
+    {% else %}
+    <p>No data collected yet.</p>
+    {% endif %}
+    {% if last_failed_timestamp %}
+    <p>Last failed result timestamp: {{ last_failed_timestamp }}</p>
+    {% endif %}
+    <form action="/export" method="get">
+        <button type="submit">Export Data</button>
+    </form>
+</body>
+</html>
+
